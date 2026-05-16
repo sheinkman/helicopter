@@ -12,7 +12,53 @@ Editor (scenes/prefabs are binary-ish YAML and are not generated here).
 - **Using Unity 2022.3 LTS instead?** The scripts call `Rigidbody2D.linearVelocity`
   (Unity 6 API). Find/replace `linearVelocity` → `velocity` across `Assets/Scripts/`.
 
-## 2. Layers & physics
+## 2. Assets to create
+
+Generate art with an image tool (e.g. Gemini Pro), then import each PNG as
+**Texture Type = Sprite (2D and UI)** with a consistent **Pixels Per Unit**
+(100 works) and **Center** pivot for the craft/orbs.
+
+> The scripts tint the **drone** and **power orb** via `SpriteRenderer.color`
+> (per-tier colors / per-orb-kind colors). Generate those two as **white /
+> light-grey** art only, or the tint will not read. The aircraft, platforms,
+> lava and background are used at full color.
+
+### Sprites
+
+| File (`Assets/Sprites/`) | Size | Notes |
+|--------------------------|------|-------|
+| `aircraft.png`     | ~256×128 | Player craft, full color, faces **right** (code flips X), transparent bg. |
+| `drone.png`        | ~256×128 | Enemy craft, **white/light-grey only** (tinted per tier), faces right. |
+| `orb.png`          | ~128×128 | Power orb, **white/near-white** (tinted per kind). |
+| `shield.png`       | ~256×256 | Translucent bubble, child of the aircraft, starts disabled. |
+| `platform.png`     | ~512×64  | Floating ledge, tileable horizontally. |
+| `ground.png`       | ~1024×128| Bottom floor strip, tileable. |
+| `lava.png`         | ~1024×128| Molten lava surface, bright. |
+| `background.png`   | 1920×1080| Static sky/space backdrop. |
+| `spark.png`        | ~64×64   | One white soft-circle texture, reused by all Particle Systems. |
+
+### UI
+
+| File | Notes |
+|------|-------|
+| `logo.png`   | "SKYJOUST" title, ~1024×512, transparent. |
+| `button.png` | Rounded rectangle, ~256×96, 9-slice friendly. |
+| `panel.png`  | Dark semi-transparent rounded panel for menu/pause/game-over. |
+| Font         | Image tools cannot make fonts — grab a free arcade font (e.g. "Press Start 2P") and import it. |
+
+### Audio (not image-generatable)
+
+Source from a free library or audio AI: thrust loop, joust hit, orb pickup,
+drone explosion, player death, wave-start fanfare, background music loop.
+
+### Prompt tips
+
+- Ask for the subject **isolated on a transparent (or plain contrasting)
+  background**; remove leftover background before import.
+- For `drone.png` / `orb.png` explicitly request **white and light-grey only**.
+- Keep all sprites **side-view, flat/vector style** for a consistent look.
+
+## 3. Layers & physics
 
 Create these layers (Edit ▸ Project Settings ▸ Tags and Layers):
 `Player`, `Enemy`, `Orb`, `Ground`, `Lava`.
@@ -23,7 +69,7 @@ In **Physics 2D ▸ Layer Collision Matrix**, leave defaults except:
   by proximity, not by physical collision.)
 - Set global **Gravity Y** to about `-18` (Edit ▸ Project Settings ▸ Physics 2D).
 
-## 3. Scene layout (`Assets/Scenes/Main.unity`)
+## 4. Scene layout (`Assets/Scenes/Main.unity`)
 
 Create a new scene and add:
 
@@ -36,9 +82,9 @@ Create a new scene and add:
 | `PlayerSpawn` | Empty GameObject mid-air; assign to `GameManager.playerSpawn`. |
 | Platforms     | Sprites with `BoxCollider2D`, layer `Ground` (one ground strip + a few floating ledges). |
 | `Lava`        | Wide `BoxCollider2D` at the bottom, **Is Trigger** on, layer `Lava`, `LavaHazard` script. |
-| `Canvas`      | UI — see step 6. |
+| `Canvas`      | UI — see step 7. |
 
-## 4. Player prefab (`Assets/Prefabs/Aircraft.prefab`)
+## 5. Player prefab (`Assets/Prefabs/Aircraft.prefab`)
 
 - Sprite for the aircraft hull, layer `Player`.
 - `Rigidbody2D`: Gravity Scale `1`, Freeze Rotation Z **on**, Collision Detection `Continuous`.
@@ -49,7 +95,7 @@ Create a new scene and add:
   child (a translucent circle, start disabled) → `shieldVisual`.
 - Assign the prefab to `GameManager.playerPrefab`.
 
-## 5. Enemy & orb prefabs
+## 6. Enemy & orb prefabs
 
 **`Drone.prefab`** — layer `Enemy`, `Rigidbody2D` (freeze rotation Z),
 `Collider2D`, `EnemyDrone` + `ScreenWrap`. Assign a child `SpriteRenderer` to
@@ -63,7 +109,7 @@ Create a new scene and add:
 > Particle VFX prefabs: set the Particle System's **Stop Action = Destroy** so
 > spawned effects clean themselves up.
 
-## 6. UI Canvas
+## 7. UI Canvas
 
 Add a `Canvas` (Screen Space - Overlay) with a child `HUDController`. Create:
 - HUD `Text` objects: score, wave, lives → assign to `HUDController`.
@@ -71,7 +117,7 @@ Add a `Canvas` (Screen Space - Overlay) with a child `HUDController`. Create:
 - `pausePanel` — **RESUME** button → `HUDController.OnResumeButton`.
 - `gameOverPanel` — `finalScoreText` + **FLY AGAIN** button → `OnRestartButton`.
 
-## 7. Controls
+## 8. Controls
 
 - **← / →** (or A/D) — steer
 - **Space / ↑ / W** — thrust (tap to climb, hold for gentle lift)
