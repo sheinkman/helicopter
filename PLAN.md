@@ -59,6 +59,7 @@ must be **white/light-grey** — the scripts tint them at runtime.
 - Thrust loop, joust hit, orb pickup, drone explosion, player death,
   wave-start fanfare, background music loop.
 
+> A detailed generation prompt for every asset lives in `ASSET_PROMPTS.md`.
 > Full import specs (Pixels Per Unit, pivots, layers) live in `SETUP.md`.
 
 ## 5. Build phases

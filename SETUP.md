@@ -51,7 +51,10 @@ Generate art with an image tool (e.g. Gemini Pro), then import each PNG as
 Source from a free library or audio AI: thrust loop, joust hit, orb pickup,
 drone explosion, player death, wave-start fanfare, background music loop.
 
-### Prompt tips
+### Prompts
+
+A detailed, copy-paste generation prompt for every asset above lives in
+**`ASSET_PROMPTS.md`**. Quick reminders:
 
 - Ask for the subject **isolated on a transparent (or plain contrasting)
   background**; remove leftover background before import.
