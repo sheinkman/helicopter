@@ -1,0 +1,25 @@
+# Unity generated folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+
+# Asset meta data (kept) — but ignore meta for ignored folders
+!/[Aa]ssets/**/*.meta
+
+# IDE / OS
+.vs/
+.idea/
+.vscode/
+*.csproj
+*.sln
+*.user
+.DS_Store
+
+# Crash reports
+sysinfo.txt
+*.stackdump
